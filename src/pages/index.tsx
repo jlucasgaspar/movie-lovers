@@ -1,36 +1,23 @@
-import axios from 'axios';
-import { useEffect, useMemo, useState } from 'react';
-import { Movie } from '../types/movie';
+import { useRouter } from 'next/router';
 
 export default function Home() {
-  const [movieSearchInput, setMovieSearchInput] = useState('');
-  const [movieSearchList, setMovieSearchList] = useState<Movie[]>([]);
+  return (
+    <div style={{ display: 'flex' }}>
+      <Button to="/ja-sei" text="Já sei" />
+      <Button to="/nao-sei" text="Não sei" />
+    </div>
+  );
+}
 
-  useEffect(() => {
-    if (!movieSearchInput) {
-      return;
-    }
-
-    axios.get<{ results: Movie[] }>(`/api/getMovieByName?name=${movieSearchInput}`)
-      .then(({ data }) => setMovieSearchList(data.results))
-  }, [movieSearchInput]);
+function Button(props: { to: string; text: string }) {
+  const { push } = useRouter();
 
   return (
-    <div>
-      <input
-        onChange={({ target }) => setMovieSearchInput(target.value)}
-        value={movieSearchInput}
-      />
-
-      <div
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
-        {movieSearchList.map(movie => (
-          <button key={movie.id} onClick={() => console.log(movie)}>
-            {movie.original_title}
-          </button>
-        ))}
-      </div>
-    </div>
+    <button
+      style={{ width: '50%', height: 200 }}
+      onClick={() => push(props.to)}
+    >
+      {props.text}
+    </button>
   );
 }
